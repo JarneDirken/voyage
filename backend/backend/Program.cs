@@ -1,4 +1,14 @@
+using backend;
+using backend.Initializer;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// connection
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connection));
 
 // Add services to the container.
 
@@ -21,5 +31,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+
+    DbInitializer.Initialize(context);
+}
 
 app.Run();
