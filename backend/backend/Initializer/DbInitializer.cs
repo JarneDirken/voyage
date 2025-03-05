@@ -7,6 +7,9 @@ namespace backend.Initializer
         public static void Initialize(AppDbContext context)
         {
 
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
+
             // dummy data
             if (!context.Users.Any())
             {

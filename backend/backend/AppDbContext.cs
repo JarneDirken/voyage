@@ -10,7 +10,7 @@ namespace backend
         // Declarer tables
         public DbSet<User> Users { get; set; }
         public DbSet<Trip> Trips { get; set; }
-        public DbSet<Activite> Activities { get; set; }
+        public DbSet<Activity> Activities { get; set; }
 
         // Cree les relations;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace backend
 
             // Trip -> Activite (One to many)
             modelBuilder.Entity<Trip>()
-                .HasMany(t => t.Activites)
+                .HasMany(t => t.Activities)
                 .WithOne(a => a.Trip)
                 .HasForeignKey(a => a.TripId)
                 .OnDelete(DeleteBehavior.Cascade);

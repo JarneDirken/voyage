@@ -15,6 +15,6 @@
         public User User { get; set; }
 
         // Has Many activities
-        public List<Activite> Activites { get; set; }
+        public List<Activity> Activities { get; set; }
     }
 }
