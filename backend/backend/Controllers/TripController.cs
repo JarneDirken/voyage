@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using backend.Dto.Trip;
-using backend.Interfaces;
+﻿using backend.Dto.Trip;
+using backend.Interfaces.Services;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,41 +9,57 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     public class TripController : Controller
     {
-        private readonly ITripInterface _tripInterface;
-        private readonly IMapper _mapper;
-        public TripController(ITripInterface tripInterface, IMapper mapper)
+        private readonly ITripService _tripService;
+        public TripController(ITripService tripService)
         {
-            _tripInterface = tripInterface;
-            _mapper = mapper;
+            _tripService = tripService;
         }
 
         // POST: api/Trip
         [HttpPost]
         public async Task<ActionResult> PostTrip([FromBody] CreateTripDto dto)
         {
-            if (dto == null)
-            {
-                return BadRequest("Invalid request data");
-            }
-
-            await _tripInterface.CreateTrip(dto);
-            // Return a response indicating the operation was successful
+            await _tripService.CreateTrip(dto);
             return Ok();
         }
 
+        // GET: api/Trip
         [HttpGet]
-        public async Task<List<GetTripDto>> GetTrips()
+        public async Task<ActionResult<List<GetTripsDto>>> GetTrips()
         {
-            var trips = await _tripInterface.GetTrips();
-            var mappedTrips = _mapper.Map<List<GetTripDto>>(trips);
-            return mappedTrips;
+            var trips = await _tripService.GetTrips();
+            return Ok(trips);
         }
 
-        [HttpGet("all")]
-        public async Task<List<Trip>> GetAllTrips()
+        // GET: api/Trip/id
+        [HttpGet("{tripId}")]
+        public async Task<ActionResult<GetTripDetailsDto>> GetVoyageDetails(int tripId)
         {
-            var trips = await _tripInterface.GetAllTrips();
-            return trips;
+            var trip = await _tripService.GetTripDetails(tripId);
+
+            // If no voyage is found, return a 404 response
+            if (trip == null)
+            {
+                return NotFound("Voyage not found.");
+            }
+
+            return Ok(trip);
+        }
+
+        // PATCH: api/Trip
+        [HttpPatch]
+        public async Task<ActionResult> UpdateTrip([FromBody] UpdateTripDto dto)
+        {
+            await _tripService.UpdateTrip(dto);
+            return Ok();
+        }
+
+        // DELETE: api/Trip
+        [HttpDelete("{tripId}")]
+        public async Task<ActionResult> DeleteTrip(int tripId)
+        {
+            await _tripService.DeleteTrip(tripId);
+            return Ok();
         }
     }
 }

@@ -1,8 +1,10 @@
 using backend;
 using backend.Controllers;
 using backend.Initializer;
-using backend.Interfaces;
+using backend.Interfaces.Repositories;
+using backend.Interfaces.Services;
 using backend.Repositories;
+using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ITripInterface, TripRepository>();
+builder.Services.AddScoped<ITripService, TripService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createTrip } from "../api/Trip";
 import { CreateTripDto } from "../dto/trip/CreateTripDto";
+import { Link } from "react-router-dom";
 
 export default function Trip() {
     const [name, setName] = useState<string>("");
@@ -11,9 +12,11 @@ export default function Trip() {
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [budget, setBudget] = useState<number | null>(null);
     const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [success, setSuccess] = useState<string>("");
 
     const handleSubmit = async () => {
-        console.log("submit");
+        setLoading(true);
         if (!name || !location || !startDate || !endDate) setError("All fields are required!");
 
         const createTripData: CreateTripDto = {
@@ -23,10 +26,16 @@ export default function Trip() {
             endDate,
             budget,
             userId: 1
-        }
+        };
 
-        const response = await createTrip(createTripData);
-        console.log(response);
+        try { 
+            await createTrip(createTripData);
+            setSuccess("Voyage est cree! Regardez tout vos voyages");
+        } catch (err) {
+            setError("Error! " + err)
+        } finally {
+            setLoading(false);
+        }
     };
 
     return(
@@ -99,6 +108,10 @@ export default function Trip() {
                 <button className="p-4 border border-green-400 bg-green-200 cursor-pointer rounded-xl w-fit hover:scale-105 transition ease-in-out">
                     Cree voyage
                 </button>
+
+                {success && (
+                <div className="text-green-600 font-semibold text-lg">{success} <Link to="/trips" className="underline font-extrabold">la</Link></div>
+                )}
             </form>
         </div>
     );
