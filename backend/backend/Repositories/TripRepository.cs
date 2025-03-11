@@ -26,6 +26,16 @@ namespace backend.Repositories
                 .ToListAsync();
             return trips;
         }
+        public async Task<List<Trip>> GetTripsPublic()
+        {
+            var trips = await _context.Trips
+                .Where(t => t.IsPublic == true)
+                .Include(t => t.User)
+                .Include(t => t.Activities)
+                .ToListAsync();
+
+            return trips;
+        }
         public async Task<Trip> GetTripDetails(int tripId)
         {
             var trip = await _context.Trips

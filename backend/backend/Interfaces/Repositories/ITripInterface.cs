@@ -9,5 +9,6 @@ namespace backend.Interfaces.Repositories
         Task<Trip> GetTripDetails(int tripId);
         Task UpdateTrip(Trip trip);
         Task DeleteTrip(int tripId);
+        Task<List<Trip>> GetTripsPublic();
     }
 }

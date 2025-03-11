@@ -16,6 +16,8 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+backend/firebase-key.json
+
 # Mono auto generated files
 mono_crash.*
 

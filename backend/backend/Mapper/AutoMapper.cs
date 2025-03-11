@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using backend.Dto.Activity;
 using backend.Dto.Trip;
+using backend.Dto.User;
 using backend.Models;
 
 namespace backend.Mapper
@@ -13,6 +14,12 @@ namespace backend.Mapper
             CreateMap<CreateTripDto, Trip>();
 
             CreateMap<UpdateTripDto, Trip>();
+
+            CreateMap<CreateUserDto, User>();
+
+            CreateMap<CreateActivityDto, Activity>();
+
+            CreateMap<UpdateActivityDto, Activity>();
 
             // -----------------------------------------------
 

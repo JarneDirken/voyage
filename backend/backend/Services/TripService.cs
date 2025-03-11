@@ -40,6 +40,12 @@ namespace backend.Services
             var mappedTrips = _mapper.Map<List<GetTripsDto>>(trips);
             return mappedTrips;
         }
+        public async Task<List<GetTripsDto>> GetTripsPublic()
+        {
+            var trips = await _tripInterface.GetTripsPublic();
+            var mappedTrips = _mapper.Map<List<GetTripsDto>>(trips);
+            return mappedTrips;
+        }
         public async Task<GetTripDetailsDto> GetTripDetails(int tripId)
         {
             var trip = await _tripInterface.GetTripDetails(tripId);

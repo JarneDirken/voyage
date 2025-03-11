@@ -9,5 +9,6 @@ namespace backend.Interfaces.Services
         Task<GetTripDetailsDto> GetTripDetails(int tripId);
         Task UpdateTrip(UpdateTripDto dto);
         Task DeleteTrip(int tripId);
+        Task<List<GetTripsDto>> GetTripsPublic();
     }
 }

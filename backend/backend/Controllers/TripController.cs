@@ -1,12 +1,14 @@
 ﻿using backend.Dto.Trip;
 using backend.Interfaces.Services;
 using backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TripController : Controller
     {
         private readonly ITripService _tripService;
@@ -28,6 +30,15 @@ namespace backend.Controllers
         public async Task<ActionResult<List<GetTripsDto>>> GetTrips()
         {
             var trips = await _tripService.GetTrips();
+            return Ok(trips);
+        }
+
+        // GET: api/Trip/Public
+        [HttpGet("Public")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<GetTripsDto>>> GetTripsPublic()
+        {
+            var trips = await _tripService.GetTripsPublic();
             return Ok(trips);
         }
 

@@ -15,7 +15,7 @@ namespace backend.Initializer
             {
                 var users = new User[]
                 {
-                    new() { FirstName="Jarne", LastName="Dirken", Email="jarnedirken@gmail.com" }
+                    new() { FirstName="Jarne", LastName="Dirken", Email="jarnedirken@gmail.com", FirebaseUid="JXmmMcfM3bQ2upUcJ334f2VD9Uz2" }
                 };
 
                 context.Users.AddRange(users);

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createTrip } from "../api/Trip";
 import { CreateTripDto } from "../dto/trip/CreateTripDto";
 import { Link } from "react-router-dom";
+import Loading from "../components/loading";
+import { useAuth } from "../hook/useAuth";
 
 export default function Trip() {
     const [name, setName] = useState<string>("");
@@ -14,6 +16,11 @@ export default function Trip() {
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<string>("");
+    const { userUid } = useAuth();
+
+    useEffect(() => {
+        console.log(userUid);
+    }, [userUid])
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -37,6 +44,8 @@ export default function Trip() {
             setLoading(false);
         }
     };
+
+    if (loading) return <Loading />
 
     return(
         <div className="flex flex-col w-full gap-4 px-32 h-full">
