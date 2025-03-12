@@ -1,9 +1,9 @@
 import axios from "axios";
 import { CreateTripDto } from "../dto/trip/CreateTripDto";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
-import { API_URL_DEVELOPMENT } from "../services/config";
+import { API_URL } from "../services/config";
 
-const tripApiUrl = `${API_URL_DEVELOPMENT}/Trip`;
+const tripApiUrl = `${API_URL}/Trip`;
 const token = localStorage.getItem("token");
 
 export async function createTrip(tripData: CreateTripDto) {

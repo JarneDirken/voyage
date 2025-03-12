@@ -1,1 +1,3 @@
-export const API_URL_DEVELOPMENT = "https://localhost:7053/api";
+export const API_URL = import.meta.env.MODE === 'production'
+  ? import.meta.env.VITE_SERVER_PRODUCTION
+  : import.meta.env.VITE_SERVER_DEVELOPMENT;
