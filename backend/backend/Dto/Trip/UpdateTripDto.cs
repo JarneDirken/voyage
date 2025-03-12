@@ -9,5 +9,6 @@
         public DateTime? EndDate { get; set; }
         public bool? IsPublic { get; set; }
         public int? Budget { get; set; }
+        public string UserUid { get; set; }
     }
 }

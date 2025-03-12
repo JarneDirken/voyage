@@ -1,20 +1,26 @@
 ﻿using backend.Interfaces.Repositories;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 
 namespace backend.Repositories
 {
     public class UserRepository : IUserInterface
     {
-        private readonly AppDbContext _appDbContext;
+        private readonly AppDbContext _context;
         public UserRepository(AppDbContext appDbContext)
         {
-            _appDbContext = appDbContext;
+            _context = appDbContext;
         }
 
         public async Task CreateUser(User user)
         {
-            _appDbContext.Users.Add(user);
-            await _appDbContext.SaveChangesAsync();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<User?> GetUserByUid(string firebaseUid)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
         }
     }
 }

@@ -9,6 +9,7 @@ import caen from "../assets/caen.png";
 import { customStyles } from "../services/modelStyles";
 import EditTripModal from "../components/editTripModal";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
+import { useAuth } from "../hook/useAuth";
 
 export default function TripDetails() {
     const { id } = useParams();
@@ -17,6 +18,7 @@ export default function TripDetails() {
     const [showModel, setShowModel] = useState<boolean>(false);
     const [refreshTrigger, setRefreshTrigger] =useState<number>(0);
     const [isPublic, setIsPublic] = useState<boolean>(false);
+    const { userUid } = useAuth();
 
     useEffect(() => {
         const fetchTripDetails = async () => {
@@ -31,21 +33,26 @@ export default function TripDetails() {
 
     useEffect(() => {
         if (trip) {
-            setIsPublic(trip.isPublic);
+            setIsPublic(!trip.isPublic);
         }
     }, [trip]);
 
-    if (!trip) return <Loading />;
+    useEffect(() => {
+        console.log(isPublic);
+    }, [isPublic])
+
+    if (!trip || !userUid) return <Loading />;
 
     const removeTrip = async () => {
-        await deleteTrip(trip.id);
-        navigate("/voyages");
+        await deleteTrip(trip.id, userUid);
+        navigate("/trips");
     };
 
     const makeTripPoublic = async () => {
         const publicTrip: UpdateTripDto = {
             id: trip.id,
-            isPublic
+            isPublic,
+            userUid
         }
 
         await updateTrip(publicTrip);
@@ -66,9 +73,9 @@ export default function TripDetails() {
                 setRefreshTrigger={setRefreshTrigger}
             />
         </Modal>
-        <div className="flex flex-col px-32">
+        <div className="flex flex-col px-32" id="contentChecklists">
             <div className="absolute top-0 left-0 -z-10 w-full h-[300px]">
-            <img src={caen} className="w-full h-full filter blur-xs" />
+            <img src={!trip.imageUrl ? caen : `${import.meta.env.VITE_SERVER_DEVELOPEMENT}${trip.imageUrl}`} className="w-full h-full filter blur-xs" />
             <div className="absolute top-0 left-0 w-full h-full bg-black opacity-20" />
             </div>
             {trip?.budget && (
@@ -79,10 +86,12 @@ export default function TripDetails() {
             <div className="mt-10 bg-white rounded-lg p-4 shadow-2xl flex flex-col gap-2">
             <div className="flex flex-row justify-between">
                 <span className="text-2xl font-semibold">{trip?.name} - {trip?.location}</span>
-                <div className="flex gap-4">
-                <FiEdit2 className="text-xl cursor-pointer" onClick={() => setShowModel(true)}/>
-                <FiTrash2 className="text-xl cursor-pointer" onClick={removeTrip} />
-                </div>
+                {userUid == trip.userUid && (
+                    <div className="flex gap-4">
+                        <FiEdit2 className="text-xl cursor-pointer text-gray-800 hover:scale-105 transition ease-in-out" onClick={() => setShowModel(true)}/>
+                        <FiTrash2 className="text-xl cursor-pointer text-red-600 hover:scale-105 transition ease-in-out" onClick={removeTrip} />
+                    </div>
+                )}
             </div>
             <div className="flex items-center gap-1">
                 <FiCalendar />
@@ -101,9 +110,13 @@ export default function TripDetails() {
             <div className="flex flex-row justify-between items-center">
                 <span>Invite: /</span>
                 <div className="flex gap-4">
-                <button className="text-white bg-black px-4 py-2 rounded-xl cursor-pointer" onClick={makeTripPoublic}>{trip.isPublic ? "Non Publier" : "Publier"}</button>
-                <button className="text-white bg-black px-4 py-2 rounded-xl">Invite</button>
-                <Link to="/voyages" className="text-white bg-black px-4 py-2 rounded-xl">Back</Link>
+                    {userUid == trip.userUid && (
+                        <>
+                            <button className="text-white bg-black px-4 py-2 rounded-xl cursor-pointer" onClick={makeTripPoublic}>{trip.isPublic ? "Non Publier" : "Publier"}</button>
+                            <button className="text-white bg-black px-4 py-2 rounded-xl">Invite</button>
+                        </>
+                    )}
+                    <Link to="/trips" className="text-white bg-black px-4 py-2 rounded-xl">Back</Link>
                 </div>
             </div>
             </div>

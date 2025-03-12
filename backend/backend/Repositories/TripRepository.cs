@@ -39,6 +39,7 @@ namespace backend.Repositories
         public async Task<Trip> GetTripDetails(int tripId)
         {
             var trip = await _context.Trips
+                .Include(t => t.User)
                 .Include(t => t.Activities)
                 .FirstOrDefaultAsync(t => t.Id == tripId);
 

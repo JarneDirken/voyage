@@ -4,11 +4,11 @@ namespace backend.Interfaces.Services
 {
     public interface ITripService
     {
-        Task CreateTrip(CreateTripDto dto);
+        Task CreateTrip(CreateTripDto dto, string imageFileName);
         Task<List<GetTripsDto>> GetTrips();
         Task<GetTripDetailsDto> GetTripDetails(int tripId);
         Task UpdateTrip(UpdateTripDto dto);
-        Task DeleteTrip(int tripId);
+        Task DeleteTrip(int tripId, string userUid);
         Task<List<GetTripsDto>> GetTripsPublic();
     }
 }

@@ -6,4 +6,5 @@ export interface UpdateTripDto {
     endDate?: Date | null;
     budget?: number | null;
     isPublic?: boolean | null;
-  }
+    userUid: string;
+}

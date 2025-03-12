@@ -10,21 +10,33 @@ namespace backend.Services
     {
         private readonly ITripInterface _tripInterface;
         private readonly IMapper _mapper;
-        public TripService(ITripInterface tripInterface, IMapper mapper)
+        private readonly IUserInterface _userInterface;
+        public TripService(ITripInterface tripInterface, IMapper mapper, IUserInterface userInterface)
         {
             _tripInterface = tripInterface;
             _mapper = mapper;
+            _userInterface = userInterface;
         }
 
-        public async Task CreateTrip(CreateTripDto dto)
+        public async Task CreateTrip(CreateTripDto dto, string imageFileName)
         {
             if (dto == null)
             {
                 throw new ArgumentException("Invalid data");
             }
 
+            var user = await _userInterface.GetUserByUid(dto.UserUid);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
             // map DTO to voyage model
             var trip = _mapper.Map<Trip>(dto);
+
+            trip.UserId = user.Id;
+            trip.ImagePath = imageFileName;
 
             // checks Budget peut pas etre negative
             if (trip.Budget < 0)
@@ -38,6 +50,7 @@ namespace backend.Services
         {
             var trips = await _tripInterface.GetTrips();
             var mappedTrips = _mapper.Map<List<GetTripsDto>>(trips);
+
             return mappedTrips;
         }
         public async Task<List<GetTripsDto>> GetTripsPublic()
@@ -50,6 +63,7 @@ namespace backend.Services
         {
             var trip = await _tripInterface.GetTripDetails(tripId);
             var mappedTrip = _mapper.Map<GetTripDetailsDto>(trip);
+            mappedTrip.ImageUrl = trip.ImagePath != null ? $"/tripImages/{trip.ImagePath}" : null;
             return mappedTrip;
         }
         public async Task UpdateTrip(UpdateTripDto dto)
@@ -59,24 +73,77 @@ namespace backend.Services
                 throw new ArgumentException("Invalid data");
             }
 
-            // map DTO to voyage model
-            var trip = _mapper.Map<Trip>(dto);
+            var trip = await _tripInterface.GetTripDetails(dto.Id);
 
             if (trip == null)
             {
-                throw new ArgumentException("Invalid trip");
+                throw new KeyNotFoundException("Trip not found");
+            }
+
+            // Verify user ownership
+            var user = await _userInterface.GetUserByUid(dto.UserUid);
+            if (user == null || trip.UserId != user.Id)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to update this trip.");
+            }
+
+            // Only update the fields that are not null in the DTO
+            Console.WriteLine(dto);
+            if (!string.IsNullOrEmpty(dto.Name))
+            {
+                trip.Name = dto.Name;
+            }
+
+            if (!string.IsNullOrEmpty(dto.Location))
+            {
+                trip.Location = dto.Location;
+            }
+
+            if (dto.StartDate.HasValue)
+            {
+                trip.StartDate = dto.StartDate.Value;
+            }
+
+            if (dto.EndDate.HasValue)
+            {
+                trip.EndDate = dto.EndDate.Value;
+            }
+
+            if (dto.IsPublic.HasValue)
+            {
+                trip.IsPublic = dto.IsPublic.Value;
+            }
+
+            if (dto.Budget.HasValue)
+            {
+                trip.Budget = dto.Budget.Value;
             }
 
             await _tripInterface.UpdateTrip(trip);
         }
-        public async Task DeleteTrip(int tripId)
+
+        public async Task DeleteTrip(int tripId, string userUid)
         {
             if (tripId <= 0)
             {
                 throw new ArgumentException("Invalid data.");
             }
 
+            var trip = await _tripInterface.GetTripDetails(tripId);
+
+            if (trip == null)
+            {
+                throw new KeyNotFoundException("Trip not found.");
+            }
+
+            var user = await _userInterface.GetUserByUid(userUid);
+            if (user == null || trip.UserId != user.Id)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to delete this trip.");
+            }
+
             await _tripInterface.DeleteTrip(tripId);
         }
+
     }
 }

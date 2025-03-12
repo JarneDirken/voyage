@@ -7,6 +7,7 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int? Budget { get; set; }
-        public int UserId { get; set; }
+        public string UserUid { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

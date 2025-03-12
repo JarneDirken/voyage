@@ -4,6 +4,7 @@ using backend.Interfaces.Repositories;
 using backend.Interfaces.Services;
 using backend.Repositories;
 using backend.Services;
+using DotNetEnv;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
@@ -14,8 +15,15 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Env.Load();
+
+// enviorment
+var enviorment = builder.Environment.EnvironmentName;
+
 // connection
-var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+var connection = enviorment == Environments.Production
+    ? Environment.GetEnvironmentVariable("DATABASE_URL")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connection));
@@ -111,6 +119,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles();
 
 app.MapControllers();
 

@@ -4,5 +4,6 @@ export interface CreateTripDto {
     startDate: Date | null;
     endDate: Date | null;
     budget?: number | null;
-    userId: number;
+    userUid: string;
+    image?: File | null;
 }

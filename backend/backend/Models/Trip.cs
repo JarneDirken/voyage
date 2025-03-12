@@ -9,6 +9,7 @@
         public DateTime EndDate { get; set; }
         public bool IsPublic { get; set; } = false;
         public int? Budget { get; set; }
+        public string? ImagePath { get; set; }
 
         // User
         public int UserId { get; set; }

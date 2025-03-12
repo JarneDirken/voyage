@@ -8,6 +8,10 @@ import TripDetails from './pages/tripDetails';
 import Login from './pages/login';
 import ProtectedRoute from './services/ProtectedRoute';
 import { AuthProvider } from './services/AuthProvider';
+import TripsPublic from './pages/tripsPublic';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 function App() {
   return (
@@ -17,10 +21,11 @@ function App() {
           <header>
             <Navbar />
           </header>
-          <main className='h-full p-4'>
+          <main className='h-full'>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path='/login' element={<Login />} />
+              <Route path='/tripsPublic' element={<TripsPublic />} />
 
               <Route element={<ProtectedRoute />} >
                 <Route path="/trip" element={<Trip />} />

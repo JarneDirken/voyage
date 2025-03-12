@@ -5,5 +5,6 @@ namespace backend.Interfaces.Repositories
     public interface IUserInterface
     {
         Task CreateUser(User user);
+        Task<User?> GetUserByUid(string firebaseUid);
     }
 }

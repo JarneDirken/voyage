@@ -8,4 +8,5 @@ export interface GetTripsDto {
     budget?: number;
     userFirstName: string;
     amountOfActivites: number;
+    imageUrl?: string;
   }

@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import { GetTripDetailsDto } from "../dto/trip/GetTripDetailsDto";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
 import { updateTrip } from "../api/Trip";
+import { useAuth } from "../hook/useAuth";
 
 interface modalProps {
   trip: GetTripDetailsDto;
@@ -17,8 +18,14 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
   const [startDate, setStartDate] = useState<Date | null>(trip.endDate);
   const [endDate, setEndDate] = useState<Date | null>(trip.startDate);
   const [budget, setBudget] = useState<number | null>(trip.budget ?? null);
+  const { userUid } = useAuth();
+  const [error, setError] = useState<string>("");
 
   const update = async () => {
+    if (!userUid) {
+      return;
+    }
+
     const dto: UpdateTripDto = {
       id: trip.id,
       name,
@@ -26,11 +33,22 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
       startDate,
       endDate,
       budget,
+      userUid
     };
 
-    await updateTrip(dto);
-    setRefreshTrigger(prev => prev + 1);
-    onClose(false);
+    try {
+      await updateTrip(dto);
+      setRefreshTrigger(prev => prev + 1);
+      onClose(false);
+    } catch (err) {
+      // Handle any error during update
+      setError("An error occurred while updating the trip. Please try again.");
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form submission
+    update(); // Call the update function
   };
 
   return(
@@ -39,7 +57,7 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
         <span className="font-medium text-2xl">Edit trip: {trip.name}</span>
         <RiCloseLargeFill className="hover:cursor-pointer size-6" onClick={() => onClose(false)}/>
       </div>
-      <form className='flex flex-col gap-8 w-full' action={update}>
+      <form className='flex flex-col gap-8 w-full' onSubmit={handleSubmit}>
         {/* Name, location */}
         <div className="flex flex-row gap-4 w-full">
           <div className="flex flex-col">
@@ -102,6 +120,10 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
         <button className="p-4 border border-green-400 bg-green-200 cursor-pointer rounded-xl w-fit hover:scale-105 transition ease-in-out">
             Update Voyage
         </button>
+
+        {error && (
+                        <div className="text-red-600 font-semibold textlg">{error}</div>
+                    )}
       </form>
     </div>
   );

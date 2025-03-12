@@ -19,9 +19,28 @@ namespace backend.Controllers
 
         // POST: api/Trip
         [HttpPost]
-        public async Task<ActionResult> PostTrip([FromBody] CreateTripDto dto)
+        public async Task<ActionResult> PostTrip([FromForm] CreateTripDto tripDto)
         {
-            await _tripService.CreateTrip(dto);
+            string imageFileName = null;
+
+            if (tripDto.Image != null)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/tripImages");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                imageFileName = $"{Guid.NewGuid()}_{tripDto.Image.FileName}"; // Unique filename
+                var filePath = Path.Combine(uploadsFolder, imageFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await tripDto.Image.CopyToAsync(stream);
+                }
+            }
+
+            await _tripService.CreateTrip(tripDto, imageFileName);
             return Ok();
         }
 
@@ -67,9 +86,9 @@ namespace backend.Controllers
 
         // DELETE: api/Trip
         [HttpDelete("{tripId}")]
-        public async Task<ActionResult> DeleteTrip(int tripId)
+        public async Task<ActionResult> DeleteTrip(int tripId, [FromQuery] string userUid)
         {
-            await _tripService.DeleteTrip(tripId);
+            await _tripService.DeleteTrip(tripId, userUid);
             return Ok();
         }
     }

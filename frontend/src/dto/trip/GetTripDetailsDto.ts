@@ -8,5 +8,7 @@ export interface GetTripDetailsDto {
     endDate: Date;
     isPublic: boolean;
     budget?: number;
+    imageUrl?: string;
+    userUid: string;
     activities?: GetActivitiesDto[];
 }

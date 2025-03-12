@@ -1,12 +1,26 @@
 import axios from "axios";
 import { CreateTripDto } from "../dto/trip/CreateTripDto";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
+import { API_URL_DEVELOPMENT } from "../services/config";
 
-const api_url = "https://localhost:7053/api/Trip";
+const tripApiUrl = `${API_URL_DEVELOPMENT}/Trip`;
 const token = localStorage.getItem("token");
 
-export async function createTrip(dto: CreateTripDto) {
-    const response = await axios.post(api_url, dto, {
+export async function createTrip(tripData: CreateTripDto) {
+  const formData = new FormData();
+    formData.append("name", tripData.name);
+    formData.append("location", tripData.location);
+    formData.append("startDate", tripData.startDate ? tripData.startDate.toISOString() : "");
+    formData.append("endDate", tripData.endDate ? tripData.endDate.toISOString() : "");
+    if (tripData.budget !== undefined && tripData.budget !== null) {
+      formData.append("budget", tripData.budget.toString());
+    }  
+    formData.append("userUid", tripData.userUid);
+    
+    if (tripData.image) {
+        formData.append("image", tripData.image);
+    }
+    const response = await axios.post(tripApiUrl, formData, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -15,7 +29,7 @@ export async function createTrip(dto: CreateTripDto) {
 };
 
 export async function getTrips() {
-    const response = await axios.get(api_url, {
+    const response = await axios.get(tripApiUrl, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -23,29 +37,41 @@ export async function getTrips() {
     return response.data;
 };
 
+export async function getPublicTrips() {
+  const response = await axios.get(tripApiUrl+"/Public", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
+
 export async function getTripDetails(id: number) {
-    const response = await axios.get(api_url+`/${id}`, {
+    const response = await axios.get(tripApiUrl+`/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
     return response.data;
-  };
+};
   
-  export async function updateTrip(dto: UpdateTripDto) {
-    const response = await axios.patch(api_url, dto, {
+export async function updateTrip(dto: UpdateTripDto) {
+    const response = await axios.patch(tripApiUrl, dto, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
     return response.data;
-  };
+};
   
-  export async function deleteTrip(id: number) {
-    const response = await axios.delete(api_url+`/${id}`, {
+export async function deleteTrip(id: number, userUid: string) {
+    const response = await axios.delete(tripApiUrl+`/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`
+      },
+      params: {
+        userUid
       }
     });
     return response.data;
-  };
+};

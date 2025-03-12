@@ -13,10 +13,15 @@
 *.userosscache
 *.sln.docstates
 
+/backend/wwwroot/*
+/backend/.env
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 backend/firebase-key.json
+/backend/Migrations
+/backend/.vs
 
 # Mono auto generated files
 mono_crash.*
