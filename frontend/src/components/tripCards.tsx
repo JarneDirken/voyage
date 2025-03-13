@@ -11,43 +11,51 @@ export default function TripCards({ trips }: TripCardsProps) {
     const location = useLocation();
     const isActive = () => location.pathname === "/trips";
 
-    return(
+    return (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 h-auto mt-4">
-            {trips.map((voyage) => (
-            <div key={voyage.id} className="w-full shadow-md border border-gray-200 rounded-md h-full">
-                <div className="h-1/3 rounded-t-md">
-                <img src={!voyage.imageUrl ? caen : `${import.meta.env.VITE_SERVER_DEVELOPEMENT}${voyage.imageUrl}`} className="rounded-t-md w-full h-full bg-cover"/>
-                </div>
-                <div className="p-2 h-2/3 rounded-b-md shadow-md flex flex-col flex-grow gap-0.5">
-                <div className="flex items-center justify-between">
-                    <span className="font-semibold text-xl truncate">{voyage.name}</span>
-                    {voyage.budget ? <span className="font-semibold text-lg">Budget: €{voyage.budget}</span> : ''}
-                </div>
-                <div className="flex items-center gap-1">
-                    <FiCalendar />
-                    <span className="font-semibold">
-                    {new Date(voyage.startDate).toLocaleDateString('fr-FR')}
-                    &nbsp;-&nbsp; 
-                    {new Date(voyage.endDate).toLocaleDateString('fr-FR')}
-                    </span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <FiMapPin />
-                    <span className="font-semibold">{voyage.location}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                <span className="font-semibold">{voyage.userFirstName}</span>
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold text-sm">Activites: {voyage.amountOfActivites ?? 0}</span>
-                    <Link to={`/trip/${voyage.id}`} className="bg-black text-white p-2 rounded-xl">Regarder</Link>
-                </div>
-                </div>
-            </div>
-            ))}
+            {Array.isArray(trips) && trips.length > 0 ? (
+                trips.map((voyage) => (
+                    <div key={voyage.id} className="w-full shadow-md border border-gray-200 rounded-md h-full">
+                        <div className="h-1/3 rounded-t-md">
+                            <img
+                                src={!voyage.imageUrl ? caen : `${import.meta.env.VITE_SERVER_DEVELOPEMENT}${voyage.imageUrl}`}
+                                className="rounded-t-md w-full h-full bg-cover"
+                            />
+                        </div>
+                        <div className="p-2 h-2/3 rounded-b-md shadow-md flex flex-col flex-grow gap-0.5">
+                            <div className="flex items-center justify-between">
+                                <span className="font-semibold text-xl truncate">{voyage.name}</span>
+                                {voyage.budget ? <span className="font-semibold text-lg">Budget: €{voyage.budget}</span> : ''}
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <FiCalendar />
+                                <span className="font-semibold">
+                                    {new Date(voyage.startDate).toLocaleDateString('fr-FR')}
+                                    &nbsp;-&nbsp;
+                                    {new Date(voyage.endDate).toLocaleDateString('fr-FR')}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <FiMapPin />
+                                <span className="font-semibold">{voyage.location}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <span className="font-semibold">{voyage.userFirstName}</span>
+                            </div>
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="font-semibold text-sm">Activites: {voyage.amountOfActivites ?? 0}</span>
+                                <Link to={`/trip/${voyage.id}`} className="bg-black text-white p-2 rounded-xl">Regarder</Link>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <div>No trips available</div>
+            )}
+
             {isActive() && (
                 <Link to="/voyage" className="w-full shadow-md border border-gray-200 bg-gray-100 rounded-md h-full flex justify-center items-center">
-                <span className="text-5xl text-green-300">+</span>
+                    <span className="text-5xl text-green-300">+</span>
                 </Link>
             )}
         </div>

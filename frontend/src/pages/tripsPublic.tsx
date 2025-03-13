@@ -14,6 +14,10 @@ export default function TripsPublic() {
 
         fetchTrips();
     }, []);
+
+    useEffect(() => {
+        console.log(trips);
+    }, [trips])
     
     return(
         <div className="flex flex-col gap-2 px-32">

@@ -15,8 +15,12 @@ export default function Navbar() {
             <div className="flex gap-4 items-center">
                 <Link to="/" className={`${isActive("/")} hover:scale-105 transition ease-in-out`}>Home</Link>
                 <Link to="/tripsPublic" className={`${isActive("/tripsPublic")} hover:scale-105 transition ease-in-out`}>Public Voyages</Link>
-                <Link to="/trip" className={`${isActive("/trip")} hover:scale-105 transition ease-in-out`}>Planifier voyage</Link>
-                <Link to="/trips" className={`${isActive("/trips")} hover:scale-105 transition ease-in-out`}>Voyages</Link>
+                {isAuthenticated() && (
+                    <>
+                         <Link to="/trip" className={`${isActive("/trip")} hover:scale-105 transition ease-in-out`}>Planifier voyage</Link>
+                         <Link to="/trips" className={`${isActive("/trips")} hover:scale-105 transition ease-in-out`}>Voyages</Link>
+                    </>
+                )}
             </div>
             <div className="flex gap-2 items-center">
             {!isAuthenticated() ? (
