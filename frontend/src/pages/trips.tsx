@@ -3,22 +3,29 @@ import { GetTripsDto } from "../dto/trip/GetTripsDto";
 import { getTrips } from "../api/Trip";
 import { Link } from "react-router-dom";
 import TripCards from "../components/tripCards";
+import { useAuth } from "../hook/useAuth";
+import Loading from "../components/loading";
 
 
 export default function Trips() {
     const [trips, setTrips] = useState<GetTripsDto[]>([]);
+    const { userUid } = useAuth();
 
     useEffect(() => {
         const fetchTrips = async () => {
-          const response = await getTrips();
-          setTrips(response);
+          if (userUid) {
+            const response = await getTrips(userUid);
+            setTrips(response);
+          }
         }
     
         fetchTrips();
-      }, []);
+    }, [userUid]);
+
+    if (!userUid) return <Loading />
 
     return(
-        <div className="flex flex-col gap-2 px-32">
+        <div className="flex flex-col gap-2 px-32 p-4" style={{ minHeight: "calc(100vh - 73.6px)" }}>
           <span className="text-3xl font-semibold">Mes voyages</span>
           {trips.length === 0 ? (
             <div>Vous-avez pas encore cree des voyages. Commence <Link to="/trip" className="text-blue-500">la</Link></div>

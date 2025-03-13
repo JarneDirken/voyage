@@ -41,27 +41,26 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
       setRefreshTrigger(prev => prev + 1);
       onClose(false);
     } catch (err) {
-      // Handle any error during update
-      setError("An error occurred while updating the trip. Please try again.");
+      setError("An error occurred while updating the trip. Please try again: " + err);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent form submission
-    update(); // Call the update function
+    e.preventDefault();
+    update();
   };
 
   return(
     <div className="flex flex-col w-full h-full gap-4">
       <div className="flex justify-between border-b border-b-BGPrimary w-full text-TXTPrimary items-center">
-        <span className="font-medium text-2xl">Edit trip: {trip.name}</span>
+        <span className="font-medium text-2xl">Modifier trip: {trip.name}</span>
         <RiCloseLargeFill className="hover:cursor-pointer size-6" onClick={() => onClose(false)}/>
       </div>
-      <form className='flex flex-col gap-8 w-full' onSubmit={handleSubmit}>
+      <form className='flex flex-col gap-8 w-full h-full' onSubmit={handleSubmit}>
         {/* Name, location */}
         <div className="flex flex-row gap-4 w-full">
           <div className="flex flex-col">
-            <span className="text-gray-400 text-sm">Nom de voyage</span>
+            <span className="text-gray-400 text-sm">Nom de voyage <span className="text-red-400">*</span></span>
             <input
               required
               className="p-2 border border-gray-300 rounded-xl w-full"
@@ -72,7 +71,7 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
           </div>
 
           <div className="flex flex-col">
-            <span className="text-gray-400 text-sm">Localisation</span>
+            <span className="text-gray-400 text-sm">Localisation <span className="text-red-400">*</span></span>
             <input
               required
               className="p-2 border border-gray-300 rounded-xl w-full"
@@ -85,7 +84,7 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
         {/* Date pickers */}
         <div className="flex flex-row gap-4 w-full">
            <div className="flex flex-col">
-              <span className="text-gray-400 text-sm">Start date</span>
+              <span className="text-gray-400 text-sm">Start date <span className="text-red-400">*</span></span>
               <DatePicker
                 required
                 className="p-2 border border-gray-300 rounded-xl"
@@ -95,7 +94,7 @@ export default function EditTripModal({ trip, onClose, setRefreshTrigger } : mod
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-gray-400 text-sm">End date</span>
+              <span className="text-gray-400 text-sm">End date <span className="text-red-400">*</span></span>
               <DatePicker
                 required
                 className="p-2 border border-gray-300 rounded-xl"

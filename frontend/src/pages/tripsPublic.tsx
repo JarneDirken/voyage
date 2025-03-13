@@ -14,13 +14,9 @@ export default function TripsPublic() {
 
         fetchTrips();
     }, []);
-
-    useEffect(() => {
-        console.log(trips);
-    }, [trips])
     
     return(
-        <div className="flex flex-col gap-2 px-32">
+        <div className="flex flex-col gap-2 px-32 p-4">
             <span className="text-3xl font-semibold">Public voyages</span>
             {trips.length === 0 ? (
                 <div>Il y a 0 public voyages disponible.</div>

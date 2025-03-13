@@ -10,6 +10,8 @@ import ProtectedRoute from './services/ProtectedRoute';
 import { AuthProvider } from './services/AuthProvider';
 import TripsPublic from './pages/tripsPublic';
 import Modal from 'react-modal';
+import Register from './pages/register';
+import Activity from './pages/activity';
 
 Modal.setAppElement('#root');
 
@@ -25,12 +27,14 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
               <Route path='/tripsPublic' element={<TripsPublic />} />
 
               <Route element={<ProtectedRoute />} >
                 <Route path="/trip" element={<Trip />} />
                 <Route path="/trips" element={<Trips />} />
                 <Route path='/trip/:id' element={<TripDetails />} />
+                <Route path='/trip/:id/activity' element={<Activity />} />
               </Route>
             </Routes>
           </main>

@@ -46,9 +46,21 @@ namespace backend.Services
 
             await _tripInterface.CreateTrip(trip);
         }
-        public async Task<List<GetTripsDto>> GetTrips()
+        public async Task<List<GetTripsDto>> GetTrips(string userUid)
         {
-            var trips = await _tripInterface.GetTrips();
+            if (userUid == null || userUid.Length <= 0)
+            {
+                throw new ArgumentNullException("Invalid data.");
+            }
+
+            var user = await _userInterface.GetUserByUid(userUid);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            var trips = await _tripInterface.GetTrips(user.Id);
             var mappedTrips = _mapper.Map<List<GetTripsDto>>(trips);
 
             return mappedTrips;
@@ -88,7 +100,6 @@ namespace backend.Services
             }
 
             // Only update the fields that are not null in the DTO
-            Console.WriteLine(dto);
             if (!string.IsNullOrEmpty(dto.Name))
             {
                 trip.Name = dto.Name;

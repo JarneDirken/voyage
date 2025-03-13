@@ -30,7 +30,6 @@ export default function Navbar() {
                 </>
                 ) : (
                 <>
-                    <Link to="/profile" className={`${isActive("/profile")} hover:scale-105 transition ease-in-out`}>Profile</Link>
                     <FiLogOut onClick={logout} className="cursor-pointer hover:scale-105 transition ease-in-out text-red-600 text-xl"/>
                 </>
             )}

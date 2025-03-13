@@ -81,7 +81,7 @@ export default function Trip() {
     if (loading) return <Loading />
 
     return(
-        <div className="flex flex-row w-full gap-4 px-32 h-full">
+        <div className="flex flex-row w-full gap-4 px-32 h-full p-4">
             <div className="w-1/2 flex flex-col">
                 <span className="text-4xl font-semibold">Ou voulez-vous aller?</span>
                 <span className="text-gray-400 mt-6">Planifiez votre prochain voyage de rêve!</span>

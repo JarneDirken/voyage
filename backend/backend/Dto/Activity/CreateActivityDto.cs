@@ -9,5 +9,6 @@
         public double? Cost { get; set; }
         public string? Location { get; set; }
         public int TripId { get; set; }
+        public string UserUid { get; set; }
     }
 }

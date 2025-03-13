@@ -20,7 +20,7 @@ namespace backend.Repositories
         }
         public async Task<User?> GetUserByUid(string firebaseUid)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
+            return await _context.Users.Include(u => u.Trips).FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
         }
     }
 }

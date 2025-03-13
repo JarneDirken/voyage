@@ -14,5 +14,6 @@ namespace backend.Dto.Trip
         public string? ImageUrl { get; set; }
         public string UserUid { get; set; }
         public List<GetActivitiesDto>? Activities { get; set; }
+        public double TotalActivityCost { get; set; }
     }
 }

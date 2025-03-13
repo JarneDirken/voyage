@@ -11,4 +11,5 @@ export interface GetTripDetailsDto {
     imageUrl?: string;
     userUid: string;
     activities?: GetActivitiesDto[];
+    totalActivityCost: number;
 }

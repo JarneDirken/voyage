@@ -18,11 +18,13 @@ namespace backend.Repositories
             _context.Trips.Add(trip);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<Trip>> GetTrips()
+        public async Task<List<Trip>> GetTrips(int userId)
         {
             var trips = await _context.Trips
+                .Where(t => t.UserId == userId)
                 .Include(t => t.User)
                 .Include(t => t.Activities)
+                .OrderByDescending(t => t.EndDate)
                 .ToListAsync();
             return trips;
         }
@@ -32,6 +34,7 @@ namespace backend.Repositories
                 .Where(t => t.IsPublic == true)
                 .Include(t => t.User)
                 .Include(t => t.Activities)
+                .OrderByDescending(t => t.EndDate)
                 .ToListAsync();
 
             return trips;

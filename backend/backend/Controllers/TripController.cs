@@ -33,6 +33,7 @@ namespace backend.Controllers
 
                 imageFileName = $"{Guid.NewGuid()}_{tripDto.Image.FileName}"; // Unique filename
                 var filePath = Path.Combine(uploadsFolder, imageFileName);
+                Console.WriteLine($"Saving image to: {filePath}");
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -46,9 +47,9 @@ namespace backend.Controllers
 
         // GET: api/Trip
         [HttpGet]
-        public async Task<ActionResult<List<GetTripsDto>>> GetTrips()
+        public async Task<ActionResult<List<GetTripsDto>>> GetTrips([FromQuery] string userUid)
         {
-            var trips = await _tripService.GetTrips();
+            var trips = await _tripService.GetTrips(userUid);
             return Ok(trips);
         }
 

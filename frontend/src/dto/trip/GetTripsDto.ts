@@ -7,6 +7,6 @@ export interface GetTripsDto {
     isPublic: boolean;
     budget?: number;
     userFirstName: string;
-    amountOfActivites: number;
+    amountOfActivities: number;
     imageUrl?: string;
   }

@@ -11,10 +11,12 @@ namespace backend.Services
     {
         private readonly IActivityInterface _activityInterface;
         private readonly IMapper _mapper;
-        public ActivityService(IActivityInterface activityInterface, IMapper mapper)
+        private readonly IUserInterface _userInterface;
+        public ActivityService(IActivityInterface activityInterface, IMapper mapper, IUserInterface userInterface)
         {
             _activityInterface = activityInterface;
             _mapper = mapper;
+            _userInterface = userInterface;
         }
 
         public async Task<List<GetActivitiesDto>> GetActivities(int tripId)
@@ -28,6 +30,19 @@ namespace backend.Services
             if (dto == null)
             {
                 throw new ArgumentException("Invalid data");
+            }
+
+            var user = await _userInterface.GetUserByUid(dto.UserUid);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            // Verify user ownership
+            if (!user.Trips.Any(t => t.Id == dto.TripId))
+            {
+                throw new UnauthorizedAccessException("You do not have permission to update this trip.");
             }
 
             // Map 

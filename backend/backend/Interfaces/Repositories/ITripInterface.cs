@@ -5,7 +5,7 @@ namespace backend.Interfaces.Repositories
     public interface ITripInterface
     {
         Task CreateTrip(Trip trip);
-        Task<List<Trip>> GetTrips();
+        Task<List<Trip>> GetTrips(int userId);
         Task<Trip> GetTripDetails(int tripId);
         Task UpdateTrip(Trip trip);
         Task DeleteTrip(int tripId);

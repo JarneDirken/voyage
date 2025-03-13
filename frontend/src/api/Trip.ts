@@ -3,7 +3,7 @@ import { CreateTripDto } from "../dto/trip/CreateTripDto";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
 import { API_URL } from "../services/config";
 
-const tripApiUrl = `${API_URL}/Trip`;
+const tripApiUrl = `${API_URL}/api/Trip`;
 const token = localStorage.getItem("token");
 
 export async function createTrip(tripData: CreateTripDto) {
@@ -28,10 +28,13 @@ export async function createTrip(tripData: CreateTripDto) {
     return response;
 };
 
-export async function getTrips() {
+export async function getTrips(userUid: string) {
     const response = await axios.get(tripApiUrl, {
       headers: {
         Authorization: `Bearer ${token}`
+      },
+      params: {
+        userUid
       }
     });
     return response.data;
