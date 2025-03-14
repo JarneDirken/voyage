@@ -90,3 +90,15 @@ export async function deleteTrip(id: number, userUid: string) {
     });
     return response.data;
 };
+
+export async function inviteUser(id: number, email: string){
+  const response = await axios.post(tripApiUrl+`/${id}/Invite`, null, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      email
+    }
+  });
+  return response;
+};

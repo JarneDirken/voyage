@@ -12,6 +12,7 @@ import { useAuth } from "../hook/useAuth";
 import ActivityCard from "../components/activityCard";
 import DeletePopup from "../components/deletePopup";
 import EditPopup from "../components/editPopup";
+import InvitePopup from "../components/invitePopup";
 
 export default function TripDetails() {
     const { id } = useParams();
@@ -22,6 +23,7 @@ export default function TripDetails() {
     const [refreshTrigger, setRefreshTrigger] =useState<number>(0);
     const [isPublic, setIsPublic] = useState<boolean>(false);
     const { userUid } = useAuth();
+     const [showInvitePopup, setShowInvitePopup] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchTripDetails = async () => {
@@ -90,6 +92,20 @@ export default function TripDetails() {
                 />
             </Modal>
         )}
+        {showInvitePopup && (
+          <Modal
+              isOpen={showInvitePopup}
+              onRequestClose={() => setShowInvitePopup(false)}
+              style={customStyles}
+              appElement={document.getElementById('contentChecklists') || undefined}
+          >
+              <InvitePopup
+                  setRefreshTrigger={setRefreshTrigger}
+                  onClose={() => setShowInvitePopup(false)}
+                  id={id}
+              />
+          </Modal>
+      )}
         <div className="flex flex-col px-32" id="contentChecklists">
             <div className="absolute top-0 left-0 -z-10 w-full h-[300px]">
             <img src={!trip.imageUrl ? caen : `${import.meta.env.VITE_SERVER_DEVELOPEMENT}${trip.imageUrl}`} className="w-full h-full filter blur-xs" />
@@ -158,7 +174,7 @@ export default function TripDetails() {
                     {userUid == trip.userUid && (
                         <>
                             <button className="text-white bg-black px-4 py-2 rounded-xl cursor-pointer hover:scale-105 transition ease-in-out" onClick={makeTripPoublic}>{trip.isPublic ? "Non Publier" : "Publier"}</button>
-                            <button className="text-white bg-black px-4 py-2 rounded-xl cursor-not-allowed">Invite</button>
+                            <button className="text-white bg-black px-4 py-2 rounded-xl cursor-pointer hover:scale-105 transition ease-in-out" onClick={() => setShowInvitePopup(true)}>Invite</button>
                         </>
                     )}
                     <button onClick={goBack} className="text-white bg-black px-4 py-2 rounded-xl cursor-pointer hover:scale-105 transition ease-in-out">Retour</button>
