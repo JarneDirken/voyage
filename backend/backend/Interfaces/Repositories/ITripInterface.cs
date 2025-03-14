@@ -11,6 +11,5 @@ namespace backend.Interfaces.Repositories
         Task UpdateTrip(Trip trip);
         Task DeleteTrip(int tripId);
         Task<List<Trip>> GetTripsPublic();
-        Task InviteUser(Trip trip, string firebaseUid);
     }
 }

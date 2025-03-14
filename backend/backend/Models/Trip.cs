@@ -10,13 +10,15 @@
         public bool IsPublic { get; set; } = false;
         public int? Budget { get; set; }
         public string? ImagePath { get; set; }
-        public List<string> UsersInvited { get; set; } =  new();
 
-        // User
+        // Foreign Key for the owner
         public int UserId { get; set; }
         public User User { get; set; }
 
-        // Has Many activities
-        public List<Activity> Activities { get; set; }
+        // Many-to-Many: A trip can have many invited users
+        public List<TripUser> TripUsers { get; set; } = new();
+
+        // One-to-Many: A trip can have many activities
+        public List<Activity> Activities { get; set; } = new();
     }
 }

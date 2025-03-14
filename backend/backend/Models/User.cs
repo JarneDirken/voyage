@@ -9,6 +9,9 @@
         public string? FirebaseUid { get; set; }
 
         // Has many Trip
-        public List<Trip> Trips { get; set; }
+        public List<Trip> Trips { get; set; } = new();
+
+        // Many-to-Many: A user can be invited to many trips
+        public List<TripUser> TripUsers { get; set; } = new();
     }
 }

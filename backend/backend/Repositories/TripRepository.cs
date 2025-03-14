@@ -44,6 +44,8 @@ namespace backend.Repositories
             var trip = await _context.Trips
                 .Include(t => t.User)
                 .Include(t => t.Activities)
+                .Include(t => t.TripUsers) 
+                    .ThenInclude(tu => tu.User)
                 .FirstOrDefaultAsync(t => t.Id == tripId);
 
             return trip;
@@ -76,20 +78,14 @@ namespace backend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task InviteUser(Trip trip, string firebaseUid)
-        {
-            if (!trip.UsersInvited.Contains(firebaseUid))
-            {
-                trip.UsersInvited.Add(firebaseUid);
-                await _context.SaveChangesAsync();
-            }
-        }
         public async Task<List<Trip>> GetSharedTrips(string userUid)
         {
             var trips = await _context.Trips
-                .Where(u => u.UsersInvited.Contains(userUid))
-                .Include(t => t.User)
+                .Include(t => t.User) 
                 .Include(t => t.Activities)
+                .Include(t => t.TripUsers)
+                    .ThenInclude(tu => tu.User) 
+                .Where(t => t.TripUsers.Any(tu => tu.User.FirebaseUid == userUid)) 
                 .OrderByDescending(t => t.EndDate)
                 .ToListAsync();
 

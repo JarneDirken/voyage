@@ -66,6 +66,8 @@ builder.Services.AddScoped<IUserInterface, UserRepository>();
 builder.Services.AddScoped<IActivityInterface, ActivityRepository>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 
+builder.Services.AddScoped<ITripUserInterface, TripUserRepository>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

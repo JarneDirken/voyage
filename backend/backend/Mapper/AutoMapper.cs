@@ -37,11 +37,10 @@ namespace backend.Mapper
                     act => act.MapFrom(src => src.Activities != null ? src.Activities.Sum(a => a.Cost ?? 0) : 0))
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src =>
                     src.ImagePath != null ? $"/tripImages/{src.ImagePath}" : null))
-                .ForMember(dest => dest.UsersInvitedEmail, opt => opt.MapFrom((src, dest, destMember, context) =>
-                       context.Items.ContainsKey("UserEmailLookup")
-                       ? ((Func<List<string>, List<string>>)context.Items["UserEmailLookup"])(src.UsersInvited)
-                       : new List<string>()
-                   ));
+                .ForMember(dest => dest.UsersInvited, opt => opt.MapFrom(src =>
+                        src.TripUsers.Select(tu => tu.User.FirebaseUid).ToList()))
+                .ForMember(dest => dest.UsersInvitedEmail, opt => opt.MapFrom(src =>
+                        src.TripUsers.Select(tu => tu.User.Email).ToList()));
 
             CreateMap<Activity, GetActivitiesDto>();
         }

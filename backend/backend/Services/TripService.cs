@@ -12,11 +12,13 @@ namespace backend.Services
         private readonly ITripInterface _tripInterface;
         private readonly IMapper _mapper;
         private readonly IUserInterface _userInterface;
-        public TripService(ITripInterface tripInterface, IMapper mapper, IUserInterface userInterface)
+        private readonly ITripUserInterface _tripUserInterface;
+        public TripService(ITripInterface tripInterface, IMapper mapper, IUserInterface userInterface, ITripUserInterface tripUserInterface)
         {
             _tripInterface = tripInterface;
             _mapper = mapper;
             _userInterface = userInterface;
+            _tripUserInterface = tripUserInterface;
         }
 
         public async Task CreateTrip(CreateTripDto dto, string imageFileName)
@@ -76,13 +78,7 @@ namespace backend.Services
         {
             var trip = await _tripInterface.GetTripDetails(tripId);
 
-            // Fetch emails for invited users
-            var userEmailsLookup = await _userInterface.GetEmailsByFirebaseUids(trip.UsersInvited);
-
-            var mappedTrip = _mapper.Map<GetTripDetailsDto>(trip, opts =>
-            {
-                opts.Items["UserEmailLookup"] = (Func<List<string>, List<string>>)(_ => userEmailsLookup);
-            });
+            var mappedTrip = _mapper.Map<GetTripDetailsDto>(trip);
 
             mappedTrip.ImageUrl = trip.ImagePath != null ? $"/tripImages/{trip.ImagePath}" : null;
 
@@ -186,7 +182,16 @@ namespace backend.Services
                 throw new KeyNotFoundException("User not found.");
             }
 
-            await _tripInterface.InviteUser(trip, user.FirebaseUid);
+            // Check if the user is already invited
+            var alreadyInvited = await _tripUserInterface.ExistingInvite(tripId, user.Id);
+
+            if (alreadyInvited)
+            {
+                throw new InvalidOperationException("User is already invited.");
+            }
+
+            // Invite the user
+            await _tripUserInterface.InviteUser(tripId, user.Id);
         }
         public async Task<List<GetTripsDto>> GetSharedTrips(string userUid)
         {

@@ -48,7 +48,9 @@ namespace backend.Services
             }
 
             // Verify user ownership OR invited user
-            if (trip.UserId != user.Id && !trip.UsersInvited.Contains(user.FirebaseUid))
+            var isOwnerOrInvited = trip.UserId == user.Id || trip.TripUsers.Any(tu => tu.UserId == user.Id);
+
+            if (!isOwnerOrInvited)
             {
                 throw new UnauthorizedAccessException("You do not have permission to create an activity.");
             }
