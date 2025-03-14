@@ -54,5 +54,10 @@ namespace backend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Activity?> GetActivityById(int id)
+        {
+            return await _context.Activities.Include(a => a.Trip).FirstOrDefaultAsync(a => a.Id== id);
+        }
     }
 }

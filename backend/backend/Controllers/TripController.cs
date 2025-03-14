@@ -45,11 +45,27 @@ namespace backend.Controllers
             return Ok();
         }
 
+        // POST: api/Trip/{id}/Invite
+        [HttpPost("{tripId}/Invite")]
+        public async Task<ActionResult> InviteUser(int tripId, [FromQuery] string email)
+        {
+            await _tripService.InviteUser(tripId, email);
+            return Ok("User successfully invited");
+        }
+
         // GET: api/Trip
         [HttpGet]
         public async Task<ActionResult<List<GetTripsDto>>> GetTrips([FromQuery] string userUid)
         {
             var trips = await _tripService.GetTrips(userUid);
+            return Ok(trips);
+        }
+
+        // GET: api/Trip/Shared
+        [HttpGet("Shared")]
+        public async Task<ActionResult<List<GetTripsDto>>> GetSharedTrips([FromQuery] string userUid)
+        {
+            var trips = await _tripService.GetSharedTrips(userUid);
             return Ok(trips);
         }
 

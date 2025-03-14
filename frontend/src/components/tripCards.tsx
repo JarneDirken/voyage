@@ -3,12 +3,15 @@ import { FiMapPin, FiCalendar, FiEye } from "react-icons/fi";
 import caen from "../assets/caen.png";
 import { Link, useLocation } from "react-router-dom";
 import { API_URL } from "../services/config";
+import { useAuth } from "../hook/useAuth";
 
 interface TripCardsProps {
     trips: GetTripsDto[];
+    hideCreateButton?: boolean;
 }
 
-export default function TripCards({ trips }: TripCardsProps) {
+export default function TripCards({ trips, hideCreateButton = false }: TripCardsProps) {
+    const { isAuthenticated } = useAuth();
     const location = useLocation();
     const isTripsPage = () => location.pathname === "/trips";
 
@@ -52,7 +55,7 @@ export default function TripCards({ trips }: TripCardsProps) {
                             </div>
                             <div className="flex items-center justify-between mb-2">
                                 <span className="font-semibold text-sm">Activites: {voyage.amountOfActivities ?? 0}</span>
-                                <Link to={`/trip/${voyage.id}`} className="bg-black text-white p-2 rounded-xl hover:scale-105 transition ease-in-out">Regarder</Link>
+                                <Link to={!isAuthenticated() ? "/login" : `/trip/${voyage.id}`} className="bg-black text-white p-2 rounded-xl hover:scale-105 transition ease-in-out">Regarder</Link>
                             </div>
                         </div>
                     </div>
@@ -61,7 +64,7 @@ export default function TripCards({ trips }: TripCardsProps) {
                 <div>No trips available</div>
             )}
 
-            {isTripsPage() && (
+            {isTripsPage() && !hideCreateButton && (
                 <Link to="/trip" className="w-full shadow-md border border-gray-200 bg-gray-100 rounded-md h-full flex justify-center items-center min-h-80">
                     <span className="text-5xl text-green-300">+</span>
                 </Link>

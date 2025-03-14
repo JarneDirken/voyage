@@ -30,6 +30,7 @@ export default function DeletePopup({ trip, activity, setRefreshTrigger, onClose
   const removeActivity = async () => {
     if (activity) {
       await deleteActivity(activity.id, userUid);
+      onClose(false);
       setRefreshTrigger(prev => prev += 1);
     }
   };

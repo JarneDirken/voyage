@@ -76,5 +76,24 @@ namespace backend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task InviteUser(Trip trip, string firebaseUid)
+        {
+            if (!trip.UsersInvited.Contains(firebaseUid))
+            {
+                trip.UsersInvited.Add(firebaseUid);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task<List<Trip>> GetSharedTrips(string userUid)
+        {
+            var trips = await _context.Trips
+                .Where(u => u.UsersInvited.Contains(userUid))
+                .Include(t => t.User)
+                .Include(t => t.Activities)
+                .OrderByDescending(t => t.EndDate)
+                .ToListAsync();
+
+            return trips;
+        }
     }
 }

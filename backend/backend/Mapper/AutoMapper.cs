@@ -36,7 +36,12 @@ namespace backend.Mapper
                 .ForMember(dest => dest.TotalActivityCost,
                     act => act.MapFrom(src => src.Activities != null ? src.Activities.Sum(a => a.Cost ?? 0) : 0))
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src =>
-                    src.ImagePath != null ? $"/tripImages/{src.ImagePath}" : null));
+                    src.ImagePath != null ? $"/tripImages/{src.ImagePath}" : null))
+                .ForMember(dest => dest.UsersInvitedEmail, opt => opt.MapFrom((src, dest, destMember, context) =>
+                       context.Items.ContainsKey("UserEmailLookup")
+                       ? ((Func<List<string>, List<string>>)context.Items["UserEmailLookup"])(src.UsersInvited)
+                       : new List<string>()
+                   ));
 
             CreateMap<Activity, GetActivitiesDto>();
         }

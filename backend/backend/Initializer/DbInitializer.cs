@@ -24,13 +24,15 @@ namespace backend.Initializer
 
             if (!context.Trips.Any())
             {
+                var user2 = context.Users.FirstOrDefault(u => u.Id == 2);
+
                 var trips = new Trip[]
                 {
                     // Trips for User 1
                     new() { Name="Vacances d'été à Split", Location="Split, Croatie",
                         StartDate=DateTime.SpecifyKind(new DateTime(2023, 7, 10), DateTimeKind.Utc),
                         EndDate=DateTime.SpecifyKind(new DateTime(2023, 7, 17), DateTimeKind.Utc),
-                        UserId=1, Budget=2500 },
+                        UserId=1, Budget=2500, UsersInvited = user2 != null ? new List<string> { user2.FirebaseUid } : new List<string>() },
 
                     new() { Name="Week-end à Amsterdam", Location="Amsterdam, Pays-Bas",
                         StartDate=DateTime.SpecifyKind(new DateTime(2024, 4, 5), DateTimeKind.Utc),

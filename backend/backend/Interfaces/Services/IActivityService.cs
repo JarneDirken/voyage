@@ -7,6 +7,6 @@ namespace backend.Interfaces.Services
         Task<List<GetActivitiesDto>> GetActivities(int tripId);
         Task CreateActivity(CreateActivityDto dto);
         Task UpdateActivity(UpdateActivityDto dto);
-        Task DeleteActivity(int activityId);
+        Task DeleteActivity(int activityId, string userUid);
     }
 }

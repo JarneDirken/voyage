@@ -7,11 +7,11 @@ import { FiCalendar, FiTrash2, FiEdit2 } from "react-icons/fi";
 import Modal from 'react-modal';
 import caen from "../assets/caen.png";
 import { customStyles } from "../services/modelStyles";
-import EditTripModal from "../components/editTripModal";
 import { UpdateTripDto } from "../dto/trip/UpdateTripDto";
 import { useAuth } from "../hook/useAuth";
 import ActivityCard from "../components/activityCard";
 import DeletePopup from "../components/deletePopup";
+import EditPopup from "../components/editPopup";
 
 export default function TripDetails() {
     const { id } = useParams();
@@ -68,7 +68,7 @@ export default function TripDetails() {
                 style={customStyles}
                 appElement={document.getElementById('contentChecklists') || undefined}
             >
-                <EditTripModal 
+                <EditPopup 
                     trip={trip}
                     onClose={() => setShowEditModal(false)}
                     setRefreshTrigger={setRefreshTrigger}
@@ -117,7 +117,7 @@ export default function TripDetails() {
                     {/* Message for over budget */}
                     {trip.totalActivityCost > trip.budget && (
                         <span className="text-red-500 mt-2">
-                            {`€ ${(trip.totalActivityCost - trip.budget).toFixed(2)} outside of budget`}
+                            {`€ ${(trip.totalActivityCost - trip.budget).toFixed(2)} hors budget`}
                         </span>
                     )}
                 </div>
@@ -148,7 +148,12 @@ export default function TripDetails() {
                 </div>
             )}
             <div className="flex flex-row justify-between items-center">
-                <span>Invite: /</span>
+                <div>
+                    Invite:&nbsp;
+                    {trip.usersInvitedEmail.map((email) => (
+                        <span key={email}>{email},&nbsp;</span>
+                    ))} 
+                </div>
                 <div className="flex gap-4">
                     {userUid == trip.userUid && (
                         <>
@@ -161,10 +166,12 @@ export default function TripDetails() {
             </div>
             </div>
             <div className="mt-8">
-                <ActivityCard 
+                <ActivityCard
                     activities={trip.activities}
                     id={id}
                     hasOwnership={hasOwnership}
+                    peopleInvited={trip.usersInvited}
+                    setRefreshTrigger={setRefreshTrigger}
                 />
             </div>
         </div>

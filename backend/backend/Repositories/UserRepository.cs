@@ -22,5 +22,16 @@ namespace backend.Repositories
         {
             return await _context.Users.Include(u => u.Trips).FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
         }
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await _context.Users.Include(u => u.Trips).FirstOrDefaultAsync(u => u.Email == email);
+        }
+        public async Task<List<string>> GetEmailsByFirebaseUids(List<string> firebaseUids)
+        {
+            return await _context.Users
+                .Where(u => firebaseUids.Contains(u.FirebaseUid))
+                .Select(u => u.Email)
+                .ToListAsync();
+        }
     }
 }

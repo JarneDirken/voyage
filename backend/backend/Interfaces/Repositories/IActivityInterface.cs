@@ -8,5 +8,6 @@ namespace backend.Interfaces.Repositories
         Task CreateActivity(Activity activity);
         Task UpdateActivity(Activity activity);
         Task DeleteActivity(int activityId);
+        Task<Activity?> GetActivityById(int id);
     }
 }

@@ -49,6 +49,18 @@ export async function getPublicTrips() {
   return response.data;
 };
 
+export async function getSharedTrips(userUid: string) {
+  const response = await axios.get(tripApiUrl+"/Shared", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      userUid
+    }
+  });
+  return response.data;
+};
+
 export async function getTripDetails(id: number) {
     const response = await axios.get(tripApiUrl+`/${id}`, {
       headers: {

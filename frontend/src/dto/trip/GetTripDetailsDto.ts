@@ -12,4 +12,6 @@ export interface GetTripDetailsDto {
     userUid: string;
     activities?: GetActivitiesDto[];
     totalActivityCost: number;
+    usersInvited: string[];
+    usersInvitedEmail: string[];
 }

@@ -44,9 +44,9 @@ namespace backend.Controllers
 
         // DELETE: api/Activity
         [HttpDelete("{activityId}")]
-        public async Task<ActionResult> DeleteActivity(int activityId)
+        public async Task<ActionResult> DeleteActivity(int activityId, [FromQuery] string userUid)
         {
-            await _activityService.DeleteActivity(activityId);
+            await _activityService.DeleteActivity(activityId, userUid);
             return Ok("Activity deleted!");
         }
     }

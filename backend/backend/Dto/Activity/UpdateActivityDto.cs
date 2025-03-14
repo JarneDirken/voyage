@@ -9,5 +9,6 @@
         public DateTime EndDate { get; set; }
         public double? Cost { get; set; }
         public string? Location { get; set; }
+        public string UserUid { get; set; }
     }
 }

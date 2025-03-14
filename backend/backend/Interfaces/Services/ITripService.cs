@@ -10,5 +10,7 @@ namespace backend.Interfaces.Services
         Task UpdateTrip(UpdateTripDto dto);
         Task DeleteTrip(int tripId, string userUid);
         Task<List<GetTripsDto>> GetTripsPublic();
+        Task<List<GetTripsDto>> GetSharedTrips(string userUid);
+        Task InviteUser(int tripId, string email);
     }
 }

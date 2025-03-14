@@ -3,6 +3,7 @@ using backend.Dto.Trip;
 using backend.Interfaces.Repositories;
 using backend.Interfaces.Services;
 using backend.Models;
+using backend.Repositories;
 
 namespace backend.Services
 {
@@ -74,8 +75,17 @@ namespace backend.Services
         public async Task<GetTripDetailsDto> GetTripDetails(int tripId)
         {
             var trip = await _tripInterface.GetTripDetails(tripId);
-            var mappedTrip = _mapper.Map<GetTripDetailsDto>(trip);
+
+            // Fetch emails for invited users
+            var userEmailsLookup = await _userInterface.GetEmailsByFirebaseUids(trip.UsersInvited);
+
+            var mappedTrip = _mapper.Map<GetTripDetailsDto>(trip, opts =>
+            {
+                opts.Items["UserEmailLookup"] = (Func<List<string>, List<string>>)(_ => userEmailsLookup);
+            });
+
             mappedTrip.ImageUrl = trip.ImagePath != null ? $"/tripImages/{trip.ImagePath}" : null;
+
             return mappedTrip;
         }
         public async Task UpdateTrip(UpdateTripDto dto)
@@ -155,6 +165,38 @@ namespace backend.Services
 
             await _tripInterface.DeleteTrip(tripId);
         }
+        public async Task InviteUser(int tripId, string email)
+        {
+            if (tripId <= 0 || email == null)
+            {
+                throw new ArgumentException("Invalid data.");
+            }
 
+            var trip = await _tripInterface.GetTripDetails(tripId);
+
+            if (trip == null)
+            {
+                throw new KeyNotFoundException("Trip not found.");
+            }
+
+            var user = await _userInterface.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            await _tripInterface.InviteUser(trip, user.FirebaseUid);
+        }
+        public async Task<List<GetTripsDto>> GetSharedTrips(string userUid)
+        {
+            if (userUid == null)
+            {
+                throw new ArgumentException("Invalid data.");
+            }
+
+            var trips = await _tripInterface.GetSharedTrips(userUid);
+            return _mapper.Map<List<GetTripsDto>>(trips);
+        }
     }
 }
