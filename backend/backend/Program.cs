@@ -102,10 +102,14 @@ var app = builder.Build();
 
 app.UseCors(options =>
 {
-    options.AllowAnyHeader();
-    options.AllowAnyMethod();
-    options.WithOrigins("http://localhost:5173", "https://voyage-eight.vercel.app");
-    //options.AllowAnyOrigin();
+    options.AllowAnyHeader()
+           .AllowAnyMethod()
+           .SetIsOriginAllowed(origin => new[]
+           {
+               "http://localhost:5173",
+               "https://voyage-eight.vercel.app"
+           }.Contains(origin))
+           .AllowCredentials();
 });
 
 // Configure the HTTP request pipeline.
